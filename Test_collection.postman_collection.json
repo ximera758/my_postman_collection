@@ -1,0 +1,686 @@
+{
+	"info": {
+		"_postman_id": "b6a1d539-a462-439b-97a5-f266bfaf03c6",
+		"name": "Test collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20701920"
+	},
+	"item": [
+		{
+			"name": "First",
+			"item": [
+				{
+					"name": "User list (no auth)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/user",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/user",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "paggination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 700ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/user?page=1&limit=50",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"user"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "50"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"email\",jsonData.email);\r",
+									"pm.environment.set(\"userId\", jsonData.id);\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "{{$randomEmail}}",
+									"type": "text"
+								},
+								{
+									"key": "lastName",
+									"value": "{{$randomLastName}}",
+									"type": "text"
+								},
+								{
+									"key": "firstName",
+									"value": "{{$randomFirstName}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/user/create",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"user",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"firstName\": \"AlexTest\",\r\n\"lastName\": \"QA_test\",\r\n\"phone\": 1453678\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/user/{{userId}}",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"user",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check user after update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"firstName\": \"AlexTest\",\r\n\"lastName\": \"QA_test\",\r\n\"picture\":\"data:image/jpeg;base64,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\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/user/{{userId}}",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"user",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"postId\",jsonData.id);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Cache-Control is present\", function () {\r",
+									"    pm.response.to.have.header(\"Cache-Control\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"text\": \"text\",\r\n\"image\": \"https://randomuser.me/api/portraits/women/58.jpg\",\r\n\"likes\": 1000,\r\n\"tags\": \"qa\",\r\n\"owner\": \"{{userId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/post/create",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"post",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/user/{{userId}}",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"user",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Post list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/post",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"post"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creare comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"commentId\",jsonData.id);\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"message\": \"comment\",\r\n\"owner\": \"{{userId}}\",\r\n\"post\": \"{{postId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/comment/create",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"comment",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/user/{{userId}}/comment",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"user",
+								"{{userId}}",
+								"comment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/comment/{{commentId}}",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"comment",
+								"{{commentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check comment after delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/user/{{userId}}/comment",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"user",
+								"{{userId}}",
+								"comment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/user/{{userId}}",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"user",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check user after removing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"message\": \"comment\",\r\n\"owner\": {{userId}},\r\n\"post\": {{postId}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dummyapi.io/data/v1/user/{{userId}}",
+							"protocol": "https",
+							"host": [
+								"dummyapi",
+								"io"
+							],
+							"path": [
+								"data",
+								"v1",
+								"user",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "63e206a2a7cb2a0cb1038b53",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "app-id",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
